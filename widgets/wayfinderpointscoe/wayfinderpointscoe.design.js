@@ -150,7 +150,7 @@
       // and always have a delegate-field="delegate" defined
       //
       runtimeTemplate: function (props) {
-        var tmpl = '<div ng-wayfinderpointscoe  incomingdata-field={{me.incomingdata}}  outgoingdata-field="me.outgoingdata" actionid-field={{me.actionid}} autolaunch-field={{me.autolaunch}}   width-field={{me.width}} height-field={{me.height}} topoffset-field={{me.topoffset}} leftoffset-field={{me.leftoffset}}  delegate-field="delegate"></div>' ; 
+        var tmpl = '<div ng-wayfinderpointscoe  incomingdata-field="me.incomingdata"  outgoingdata-field="me.outgoingdata" actionid-field={{me.actionid}} autolaunch-field={{me.autolaunch}}   width-field={{me.width}} height-field={{me.height}} topoffset-field={{me.topoffset}} leftoffset-field={{me.leftoffset}}  delegate-field="delegate"></div>' ; 
         return tmpl;
       }
     };
