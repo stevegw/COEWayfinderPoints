@@ -2,6 +2,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
   module.exports = 'wayfinderpointscoe-ng';
 }
 
+
 (function () {
   'use strict';
 

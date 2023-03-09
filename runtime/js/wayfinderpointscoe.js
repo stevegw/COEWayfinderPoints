@@ -1,11 +1,6 @@
 
 
-  // When making changes to either the design or ng files you will need to stop and start the Vuforia Studio service
-  // Changes to your implemenation file in this case called widgetcoe.js you only need to start preview again
-
-
-
-class Widgetcoe {
+class Wayfinderpointscoe {
 
     actionBuilder;
     vuforiaScope;

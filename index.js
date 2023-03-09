@@ -3,7 +3,7 @@ exports.extensionInfo = {
 };
 
 exports.runtimeAngularModulesRequires = [
-                                         "widgetcoe-ng",
+                                         "wayfinderpointscoe-ng",
                                         ];
 
 
