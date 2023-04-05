@@ -56,7 +56,7 @@
           showInput: true,
           editor: 'select',
           options: [
-            {label: 'Work InstructionDialog', value: "WorkInstructionDialog"},
+            {label: 'BoundingBox Waypoint', value: "BoundingBoxWaypoint"},
             {label: 'No action', value: "NoAction"}
             ]
         },
@@ -69,6 +69,97 @@
           isBindingSource: false,
           showInput: true
         },
+        {
+          name: 'modelid',
+          label: 'Model ID',
+          datatype: 'string',
+          default: 'model-1',
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
+          name: 'modelx',
+          label: 'Model x',
+          datatype: 'string',
+          default: '0',
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
+          name: 'modely',
+          label: 'Model y',
+          datatype: 'string',
+          default: '0',
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
+          name: 'modelz',
+          label: 'Model z',
+          datatype: 'string',
+          default: '0',
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
+          name: 'modelrx',
+          label: 'Model rx',
+          datatype: 'string',
+          default: '0',
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
+          name: 'modelry',
+          label: 'Model ry',
+          datatype: 'string',
+          default: '0',
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
+          name: 'modelrz',
+          label: 'Model rz',
+          datatype: 'string',
+          default: '0',
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
+          name: 'modelscale',
+          label: 'Model scale',
+          datatype: 'Number',
+          default: '1.0',
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
+          name: 'modelbounds',
+          label: 'Model bounds',
+          datatype: 'string',
+          default: "",
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
+          name: 'endpointtext',
+          label: 'Endpoint Text',
+          datatype: 'string',
+          default: '',
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+
         {
           name: 'width',
           label: 'width',
@@ -133,7 +224,7 @@
 
 
       dependencies: {
-        files         : ['js/wayfinderpointscoe-ng.js','js/wayfinderpointscoe.js', 'images/wayfinderpointscoe_close.png' ,'images/wayfinderpointscoe_expand.png'],
+        files         : ['js/wayfinderpointscoe-ng.js','js/wayfinderpointscoe.js', 'js/matrix.js', 'images/wayfinderpointscoe_close.png' ,'images/wayfinderpointscoe_expand.png'],
         angularModules: ['wayfinderpointscoe-ng']
       },
 
@@ -150,7 +241,7 @@
       // and always have a delegate-field="delegate" defined
       //
       runtimeTemplate: function (props) {
-        var tmpl = '<div ng-wayfinderpointscoe  incomingdata-field="me.incomingdata"  outgoingdata-field="me.outgoingdata" actionid-field={{me.actionid}} autolaunch-field={{me.autolaunch}}   width-field={{me.width}} height-field={{me.height}} topoffset-field={{me.topoffset}} leftoffset-field={{me.leftoffset}}  delegate-field="delegate"></div>' ; 
+        var tmpl = '<div ng-wayfinderpointscoe  incomingdata-field="me.incomingdata"  outgoingdata-field="me.outgoingdata" actionid-field={{me.actionid}} autolaunch-field={{me.autolaunch}}  modelid-field={{me.modelid}}  modelx-field={{me.modelx}}  modely-field={{me.modely}} modelz-field={{me.modelz}} modelrx-field={{me.modelrx}} modelry-field={{me.modelry}} modelrz-field={{me.modelrz}} modelscale-field={{me.modelscale}} modelbounds-field="me.modelbounds" endpointtext-field={{me.endpointtext}}    width-field={{me.width}} height-field={{me.height}} topoffset-field={{me.topoffset}} leftoffset-field={{me.leftoffset}}  delegate-field="delegate"></div>' ; 
         return tmpl;
       }
     };

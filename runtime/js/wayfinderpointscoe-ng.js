@@ -29,6 +29,15 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         incomingdataField : '=',
         outgoingdataField : '=',
         actionidField : '@',
+        modelxField :  '@',
+        modelyField :  '@',
+        modelzField :  '@',  
+        modelrxField :  '@', 
+        modelryField :  '@',         
+        modelrzField :  '@', 
+        modelscaleField :  '@', 
+        modelboundsField :  '=', 
+        endpointtextField : '@',
         autolaunchField: '@',
         widthField : '@',
         heightField : '@',
@@ -44,7 +53,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
       template: '<div></div>',
       link: function (scope, element, attr) {
 
-        let wayfinderpointscoe = undefined ;
+        //let wayfinderpointscoe = undefined ;
 
         scope.renderer = $window.cordova ? vuforia : $injector.get('threeJsTmlRenderer'); // if you are required to use the renderer - in this example I have not used it
         //
@@ -57,14 +66,15 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
           // As you work with Vuforia view and use the debugger, you will see that Vuforia View executes your code during startup, which is probably before you expect
           // During launch the UI fires - You will have to decide how your code reacts to undefined or blank inputs 
           //
-          if (wayfinderpointscoe == undefined) {
+          //if (wayfinderpointscoe == undefined) {
             try {
-               wayfinderpointscoe = new Wayfinderpointscoe(scope,scope.incomingdataField , scope.actionidField , scope.widthField, scope.heightField );
+               let wayfinderpointscoe = new Wayfinderpointscoe(scope,scope.incomingdataField , scope.actionidField , scope.modelxField ,scope.modelyField ,scope.modelzField , scope.modelrxField ,scope.modelryField ,scope.modelrzField , scope.modelscaleField , scope.modelboundsField ,   scope.widthField, scope.heightField );
+               wayfinderpointscoe.doAction();
             }catch(ex) {
-              console.log('Creating the class Wayfinderpointscoe - something went wrong! The exception >>'+ ex);
+              console.log('executeWidget Wayfinderpointscoe - something went wrong! The exception >>'+ ex);
             }
-          }
-           wayfinderpointscoe.doAction();
+          //}
+           
         };
 
         //
@@ -131,9 +141,10 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         //
         scope.$watch('delegateField', function (delegate) {
           if (delegate) {
-            delegate.start = function () { 
-              start(); 
-            };
+            delegate.start = function () {
+              $timeout(start,5);            
+           };
+
             delegate.stop = function () { 
               stop(); 
             };

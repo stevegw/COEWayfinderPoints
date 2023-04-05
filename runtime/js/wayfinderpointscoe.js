@@ -2,260 +2,132 @@
 
 class Wayfinderpointscoe {
 
-    actionBuilder;
     vuforiaScope;
-    data;
     actionid;
+    data;
+    modelx;
+    modely;
+    modelz;
+    modelrx;
+    modelry;
+    modelrz;
+    modelscale;
+    modelbounds;
     width;
     height;
 
-    constructor(vuforiaScope, data,  actionid, width, height) {
+    //scope,scope.incomingdataField , scope.actionidField , scope.modelxField ,scope.modelyField ,scope.modelzField , scope.modelrxField ,scope.modelryField ,scope.modelrzField , scope.modelscaleField , scope.modelboundsField ,   scope.widthField, scope.heightField 
+    constructor(vuforiaScope, data, actionid, modelx, modely, modelz, modelrx, modelry, modelrz, modelscale , modelbounds,   width, height) {
 
         // Not using the topoffset, leftoffset yet
         this.vuforiaScope  = vuforiaScope;
         this.data = data;
         this.actionid = actionid;
+        this.modelx = modelx;
+        this.modely = modely;
+        this.modelz = modelz;
+        this.modelrx = modelrx;
+        this.modelry = modelry;
+        this.modelrz = modelrz;
+        this.modelscale = modelscale;
+        this.modelbounds = modelbounds;
         this.width = width;
         this.height = height;
-        this.actionBuilder = new ActionBuilder();
+
        
     }
 
     doAction = function () {
-        if (this.actionid == 'WorkInstructionDialog') {
-            let wiDialogURL = this.actionBuilder.createWorkInstructionDialogURL( this.data, "Information", this.width, this.height,"bottom", 'arial' , 20, 'arial' , 16);
-            this.vuforiaScope.outgoingdataField = wiDialogURL;
-            this.vuforiaScope.$parent.fireEvent('completed');
-            this.vuforiaScope.$parent.$applyAsync();
-
-        } else {
+         if (this.actionid == 'BoundingBoxWaypoint') {
+            this.boundingBoxWaypoint();
+        }
+        
+        else {
             // add more functions here with else if 
         
         }
 
     }
-}
 
-class ActionBuilder {
+    // ------------------------------------------------------------------
+    // transform bounding box info to match transform of model (translation, rotation, scale) 
+    // ------------------------------------------------------------------
 
-    createWorkInstructionDialogURL = function ( WorkInstructionText, HeaderText, DialogWidth, DialogHeight, LeaderLine, HeaderFont, HeaderFontSize, BodyFont, BodyFontSize) {
-
-        var textcanvas = document.createElement('canvas');
-        var ctxtext = textcanvas.getContext("2d");
-
-        if ((LeaderLine.toUpperCase() == 'NONE') || (LeaderLine.toUpperCase() == 'BOTTOM')) {
-
-            if (LeaderLine.toUpperCase() == 'NONE') {
-
-                textcanvas.width = DialogWidth;
-                textcanvas.height = DialogHeight;
-
-            } else if (LeaderLine.toUpperCase() == 'BOTTOM') {
-
-                textcanvas.width = DialogWidth;
-                textcanvas.height = DialogHeight * 2;
-
-            }
-
-            //Create Background 
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctxtext.clearRect(0, 0, DialogWidth, DialogHeight);
-            ctxtext.fillRect(0, 0, DialogWidth, DialogHeight);
-
-            //Create Header Bar  
-            ctxtext.fillStyle = 'rgba(70, 161, 218, 1)';
-            ctxtext.clearRect(0, 0, DialogWidth, (DialogHeight * 0.25));
-            ctxtext.fillRect(0, 0, DialogWidth, (DialogHeight * 0.25));
-
-            //Header Text
-            ctxtext.font = HeaderFontSize + 'px' + ' ' + HeaderFont;
-            ctxtext.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            ctxtext.textBaseline = 'middle';
-            wrapText(ctxtext, HeaderText, 10, ((DialogHeight * 0.25) / 2), (DialogWidth - 20), 18);
-
-            //WorkInstruction Text
-            ctxtext.font = BodyFontSize + 'px' + ' ' + BodyFont;
-            ctxtext.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            //ctxtext.textAlign = 'center';
-            wrapText(ctxtext, WorkInstructionText, 10, ((DialogHeight * 0.25) + 20), (DialogWidth - 20), 18);
-
-            if (LeaderLine.toUpperCase() == 'BOTTOM') {
-
-                //Create Bottom Leaderline
-                ctxtext.fillStyle = 'rgba(0, 0, 0, 1.0)';
-                ctxtext.beginPath();
-                ctxtext.moveTo((DialogWidth / 2), DialogHeight);
-                ctxtext.lineTo((DialogWidth / 2), (DialogHeight + 75));
-                ctxtext.stroke();
-
-                ctxtext.fillStyle = 'rgba(0, 0, 0, 1.0)';
-                ctxtext.clearRect((DialogWidth / 2) - 10, (DialogHeight + 75), 20, 20);
-                ctxtext.fillRect((DialogWidth / 2) - 10, (DialogHeight + 75), 20, 20);
-
-            }
-
-        } else if (LeaderLine.toUpperCase() == 'LEFT') {
-
-            textcanvas.width = DialogWidth * 2;
-            textcanvas.height = DialogHeight;
-
-            //Create Background 
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctxtext.clearRect(95, 0, DialogWidth, DialogHeight);
-            ctxtext.fillRect(95, 0, DialogWidth, DialogHeight);
-
-            //Create Header Bar  
-            ctxtext.fillStyle = 'rgba(70, 161, 218, 1)';
-            ctxtext.clearRect(95, 0, DialogWidth, (DialogHeight * 0.25));
-            ctxtext.fillRect(95, 0, DialogWidth, (DialogHeight * 0.25));
-
-            //Header Text
-            ctxtext.font = HeaderFontSize + 'px' + ' ' + HeaderFont;
-            ctxtext.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            ctxtext.textBaseline = 'middle';
-            wrapText(ctxtext, HeaderText, 105, ((DialogHeight * 0.25) / 2), (DialogWidth - 20), 18);
-
-            //WorkInstruction Text  
-            ctxtext.font = BodyFontSize + 'px' + ' ' + BodyFont;
-            ctxtext.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            //ctxtext.textAlign = 'center';
-            wrapText(ctxtext, WorkInstructionText, 105, ((DialogHeight * 0.25) + 20), (DialogWidth - 20), 18);
-
-            //Create Left Leaderline
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 1.0)';
-            ctxtext.beginPath();
-            ctxtext.moveTo(0, (DialogHeight / 2));
-            ctxtext.lineTo(95, (DialogHeight / 2));
-            ctxtext.stroke();
-
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 1.0)';
-            ctxtext.clearRect(0, ((DialogHeight / 2) - 10), 20, 20);
-            ctxtext.fillRect(0, ((DialogHeight / 2) - 10), 20, 20);
-
-        } else if (LeaderLine.toUpperCase() == 'RIGHT') {
-
-            textcanvas.width = DialogWidth * 2;
-            textcanvas.height = DialogHeight;
-
-            //Create Background 
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctxtext.clearRect(0, 0, DialogWidth, DialogHeight);
-            ctxtext.fillRect(0, 0, DialogWidth, DialogHeight);
-
-            //Create Header Bar  
-            ctxtext.fillStyle = 'rgba(70, 161, 218, 1)';
-            ctxtext.clearRect(0, 0, DialogWidth, (DialogHeight * 0.25));
-            ctxtext.fillRect(0, 0, DialogWidth, (DialogHeight * 0.25));
-
-            //Header Text
-            ctxtext.font = HeaderFontSize + 'px' + ' ' + HeaderFont;
-            ctxtext.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            ctxtext.textBaseline = 'middle';
-            wrapText(ctxtext, HeaderText, 10, ((DialogHeight * 0.25) / 2), (DialogWidth - 20), 18);
-
-            //WorkInstruction Text  
-            ctxtext.font = BodyFontSize + 'px' + ' ' + BodyFont;
-            ctxtext.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            //ctxtext.textAlign = 'center';
-            wrapText(ctxtext, WorkInstructionText, 10, ((DialogHeight * 0.25) + 20), (DialogWidth - 20), 18);
-
-            //Create Right Leaderline
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 1.0)';
-            ctxtext.beginPath();
-            ctxtext.moveTo(DialogWidth, (DialogHeight / 2));
-            ctxtext.lineTo((DialogWidth + 95), (DialogHeight / 2));
-            ctxtext.stroke();
-
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 1.0)';
-            ctxtext.clearRect(((DialogWidth + 95) - 20), ((DialogHeight / 2) - 10), 20, 20);
-            ctxtext.fillRect(((DialogWidth + 95) - 20), ((DialogHeight / 2) - 10), 20, 20);
-
-        } else if (LeaderLine.toUpperCase() == 'TOP') {
-
-            textcanvas.width = DialogWidth;
-            textcanvas.height = DialogHeight * 2;
-
-            //Create Background 
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctxtext.clearRect(0, 95, DialogWidth, DialogHeight);
-            ctxtext.fillRect(0, 95, DialogWidth, DialogHeight);
-
-            //Create Header Bar  
-            ctxtext.fillStyle = 'rgba(70, 161, 218, 1)';
-            ctxtext.clearRect(0, 95, DialogWidth, (DialogHeight * 0.25));
-            ctxtext.fillRect(0, 95, DialogWidth, (DialogHeight * 0.25));
-
-            //Header Text
-            ctxtext.font = HeaderFontSize + 'px' + ' ' + HeaderFont;
-            ctxtext.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            ctxtext.textBaseline = 'middle';
-            wrapText(ctxtext, HeaderText, 10, (95 + ((DialogHeight * 0.25) / 2)), (DialogWidth - 20), 18);
-
-            //WorkInstruction Text
-            ctxtext.font = BodyFontSize + 'px' + ' ' + BodyFont;
-            ctxtext.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            //ctxtext.textAlign = 'center';
-            wrapText(ctxtext, WorkInstructionText, 10, (95 + ((DialogHeight * 0.25) + 20)), (DialogWidth - 20), 18);
-
-            //Create Bottom Leaderline
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 1.0)';
-            ctxtext.beginPath();
-            ctxtext.moveTo((DialogWidth / 2), 20);
-            ctxtext.lineTo((DialogWidth / 2), 95);
-            ctxtext.stroke();
-            ctxtext.fillStyle = 'rgba(0, 0, 0, 1.0)';
-            ctxtext.clearRect((DialogWidth / 2) - 10, 0, 20, 20);
-            ctxtext.fillRect((DialogWidth / 2) - 10, 0, 20, 20);
-
-        }
-
-        function wrapText(context, text, x, y, maxWidth, lineHeight) {
-            var words = text.split(' '),
-                line = '',
-                lineCount = 0,
-                i,
-                test,
-                metrics;
-            for (i = 0; i < words.length; i++) {
-                test = words[i];
-                metrics = context.measureText(test);
-                while (metrics.width > maxWidth) {
-                    // Determine how much of the word will fit
-                    test = test.substring(0, test.length - 1);
-                    metrics = context.measureText(test);
-                }
-                if (words[i] != test) {
-                    words.splice(i + 1, 0, words[i].substr(test.length))
-                    words[i] = test;
-                }
-                test = line + words[i] + ' ';
-                metrics = context.measureText(test);
-                if (metrics.width > maxWidth && i > 0) {
-                    context.fillText(line, x, y);
-                    line = words[i] + ' ';
-                    y += lineHeight;
-                    lineCount++;
-                } else {
-                    line = test;
-                }
-            }
-            ctxtext.fillText(line, x, y);
-        }
-
-       return  textcanvas.toDataURL();
-
+    transformLocationCoordinates = function(x,y,z,offsetx,offsety,offsetz,offsetrx,offsetry,offsetrz,scale){
+        let xaxis = [1,0,0];
+        let yaxis = [0,1,0];
+        let zaxis = [0,0,1];
+    
+        let origxyz = new Vector4().Set4(x,y,z,1); 
+        let deg2radFac = Math.PI/180.0;
+    
+        let mx = new Matrix4();
+        //let transMxyz = mx.Scale(scale,scale,scale).Rotate(xaxis, -offsetrx*deg2radFac).Rotate(yaxis, -offsetry*deg2radFac).Rotate(zaxis, -offsetrz*deg2radFac).Translate(offsetx,offsety,offsetz);
+        let transMxyz = mx.Scale(scale,scale,scale).Rotate(xaxis, -offsetrx*deg2radFac).Rotate(yaxis, -offsetry*deg2radFac).Rotate(zaxis, -offsetrz*deg2radFac).Translate(offsetx,offsety,offsetz);
+        
+        return origxyz.Transform(transMxyz);
+    
     }
 
+    boundingBoxWaypoint(   ) {
+
+        
+        let modelOffsetx = this.modelx;
+        let modelOffsety = this.modely;
+        let modelOffsetz = this.modelz;
+        let modelOffsetrx = this.modelrx;
+        let modelOffsetry = this.modelry;
+        let modelOffsetrz = this.modelrz;
+        let modelOffsetscale = this.modelscale;
+        let data  = this.data;
+
+
+    //  Assuming incoming data looks like this [{"model":"myModel","path":"/2788/2359/927/53/66/580"}]
+    //  We can get the Model Bounds
+        
+
+        let modelName =  data.model;
+        let path = data.path;
+        try {
+        
+          PTC.Metadata.fromId(modelName).then( (metadata) => {
+            var bounds = metadata.get(path).getProp("Model Bounds");
+
+            // Model Bounds "-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"
+    
+
+            let waypointLabel = "";
+            let boundsArray = bounds.split(" ");
+        
+            let x = ( Math.abs(boundsArray[0]) + Math.abs(boundsArray[3])) / 2.0;
+            let y = ( Math.abs(boundsArray[1]) + Math.abs(boundsArray[4])) / 2.0;
+            let z = ( Math.abs(boundsArray[2]) + Math.abs(boundsArray[5])) / 2.0;
+        
+            let transFormedxyz = transformLocationCoordinates(x,y,z,modelOffsetx,modelOffsety,modelOffsetz,modelOffsetrx,modelOffsetry,modelOffsetrz,modelOffsetscale);
+        
+            let xloc = transFormedxyz.v[0];
+            let yloc = transFormedxyz.v[1];
+            let zloc = transFormedxyz.v[2];
+        
+            // [{"model":"model-tml","path":"/1/0/0/17","Model Bounds":"-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"}]
+            let position =  [{"position": { "x":  xloc , "y":  yloc, "z": zloc } , "gaze": { "x": 0 , "y": 0, "z":-1},"up":{ "x": 0 , "y": 1, "z":0} , "eventRadius": "0.1", "wayfinderDisplayBoundary": 1.0 , "label":waypointLabel} ];
+            this.vuforiaScope.outgoingdataField = position ; 
 
 
 
+          }); 
 
-
-
-
-
+        } catch (ex) {
+          console.log("Exception from getBoundingBox" + ex);
+        }
+      }
 
 }
+
+
+
+
+
 
 
 
