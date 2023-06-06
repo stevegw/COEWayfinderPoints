@@ -27,8 +27,10 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         //
 
         incomingdataField : '=',
+        secondincomingdataField : '=',
         outgoingdataField : '=',
         actionidField : '@',
+        modelidField :  '@',
         modelxField :  '@',
         modelyField :  '@',
         modelzField :  '@',  
@@ -68,10 +70,27 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
           //
           //if (wayfinderpointscoe == undefined) {
             try {
-               let wayfinderpointscoe = new Wayfinderpointscoe(scope,scope.incomingdataField , scope.actionidField , scope.modelxField ,scope.modelyField ,scope.modelzField , scope.modelrxField ,scope.modelryField ,scope.modelrzField , scope.modelscaleField , scope.modelboundsField ,   scope.widthField, scope.heightField );
+               let wayfinderpointscoe = new Wayfinderpointscoe(scope,scope.incomingdataField , scope.actionidField , scope.modelidField , scope.modelxField ,scope.modelyField ,scope.modelzField , scope.modelrxField ,scope.modelryField ,scope.modelrzField , scope.modelscaleField , scope.modelboundsField ,   scope.widthField, scope.heightField );
                wayfinderpointscoe.doAction();
             }catch(ex) {
               console.log('executeWidget Wayfinderpointscoe - something went wrong! The exception >>'+ ex);
+            }
+          //}
+           
+        };
+
+        var secondExecuteWidget = function() {
+          console.log('second executeWidget custom activities started');
+          //
+          // As you work with Vuforia view and use the debugger, you will see that Vuforia View executes your code during startup, which is probably before you expect
+          // During launch the UI fires - You will have to decide how your code reacts to undefined or blank inputs 
+          //
+          //if (wayfinderpointscoe == undefined) {
+            try {
+               let wayfinderpointscoe = new Wayfinderpointscoe(scope,scope.secondincomingdataField , scope.actionidField , scope.modelidField , scope.modelxField ,scope.modelyField ,scope.modelzField , scope.modelrxField ,scope.modelryField ,scope.modelrzField , scope.modelscaleField , scope.modelboundsField ,   scope.widthField, scope.heightField );
+               wayfinderpointscoe.doAction();
+            }catch(ex) {
+              console.log('second executeWidget Wayfinderpointscoe - something went wrong! The exception >>'+ ex);
             }
           //}
            
@@ -91,6 +110,14 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
           // and let others know
           scope.$parent.fireEvent('started');
           executeWidget();
+        }
+
+        var secondstart = function() {
+          console.log('Second Starting');
+          // decide what to do when the start is fired
+          // and let others know
+          scope.$parent.fireEvent('secondstarted');
+          secondExecuteWidget();
         }
         var stop = function() {
           console.log('Stopping');
@@ -113,13 +140,28 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         // When the use starts it will set the value to and that ius see as a data change
         //
         scope.$watch('incomingdataField', function () {
-          console.log('dataField='+ scope.incomingdataField);
+          
 
-          if (scope.incomingdataField != undefined && scope.incomingdataField != '') {
+          if (scope.incomingdataField != undefined && scope.incomingdataField != '' && scope.incomingdataField.length > 0) {
             // If you do want to start when there is any incoming data change
             // provide a autolaunchField with a checkbox and check for true or false
+            console.log('dataField='+ scope.incomingdataField);
             if (scope.autolaunchField == "true") {
               start();
+            }
+          }
+
+        });
+
+        scope.$watch('secondincomingdataField', function () {
+          
+
+          if (scope.secondincomingdataField != undefined && scope.secondincomingdataField != '' && scope.secondincomingdataField.length > 0) {
+            // If you do want to start when there is any incoming data change
+            // provide a autolaunchField with a checkbox and check for true or false
+            console.log('secondincomingdata ='+ scope.secondincomingdataField);
+            if (scope.autolaunchField == "true") {
+              secondstart();
             }
           }
 
@@ -142,7 +184,8 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         scope.$watch('delegateField', function (delegate) {
           if (delegate) {
             delegate.start = function () {
-              $timeout(start,5);            
+              //$timeout(start,5); 
+              start();              
            };
 
             delegate.stop = function () { 
@@ -158,7 +201,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         // Comment out once you have it working
         //
         scope.$watch( function() {
-          console.log("Wayfinderpointscoe watching for anything happening - uncomment this when you have all you watches working"); 
+          // console.log("Wayfinderpointscoe watching for anything happening - uncomment this when you have all you watches working"); 
         });
       }
     };

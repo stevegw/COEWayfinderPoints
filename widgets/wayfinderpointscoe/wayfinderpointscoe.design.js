@@ -38,6 +38,15 @@
           showInput: false
         },
         {
+          name: 'secondincomingdata',
+          label: 'Additional Incoming data',
+          datatype: 'json',
+          default: {},
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: false
+        },
+        {
           name: 'outgoingdata',
           label: 'some return data',
           datatype: 'string',
@@ -136,7 +145,7 @@
           name: 'modelscale',
           label: 'Model scale',
           datatype: 'Number',
-          default: '1.0',
+          default: 1.0,
           isBindingTarget: true,
           isBindingSource: false,
           showInput: true
@@ -205,6 +214,10 @@
           label: 'Start'
         },
         {
+          name: 'secondstart',
+          label: 'Additional incoming Started'
+        },
+        {
           name: 'stop',
           label: 'Stop'
         }
@@ -241,7 +254,7 @@
       // and always have a delegate-field="delegate" defined
       //
       runtimeTemplate: function (props) {
-        var tmpl = '<div ng-wayfinderpointscoe  incomingdata-field="me.incomingdata"  outgoingdata-field="me.outgoingdata" actionid-field={{me.actionid}} autolaunch-field={{me.autolaunch}}  modelid-field={{me.modelid}}  modelx-field={{me.modelx}}  modely-field={{me.modely}} modelz-field={{me.modelz}} modelrx-field={{me.modelrx}} modelry-field={{me.modelry}} modelrz-field={{me.modelrz}} modelscale-field={{me.modelscale}} modelbounds-field="me.modelbounds" endpointtext-field={{me.endpointtext}}    width-field={{me.width}} height-field={{me.height}} topoffset-field={{me.topoffset}} leftoffset-field={{me.leftoffset}}  delegate-field="delegate"></div>' ; 
+        var tmpl = '<div ng-wayfinderpointscoe  incomingdata-field="me.incomingdata" secondincomingdata-field="me.secondincomingdata"  outgoingdata-field="me.outgoingdata" actionid-field={{me.actionid}} autolaunch-field={{me.autolaunch}}  modelid-field={{me.modelid}}  modelx-field={{me.modelx}}  modely-field={{me.modely}} modelz-field={{me.modelz}} modelrx-field={{me.modelrx}} modelry-field={{me.modelry}} modelrz-field={{me.modelrz}} modelscale-field={{me.modelscale}} modelbounds-field="me.modelbounds" endpointtext-field={{me.endpointtext}}    width-field={{me.width}} height-field={{me.height}} topoffset-field={{me.topoffset}} leftoffset-field={{me.leftoffset}}  delegate-field="delegate"></div>' ; 
         return tmpl;
       }
     };

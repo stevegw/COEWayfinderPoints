@@ -5,6 +5,7 @@ class Wayfinderpointscoe {
     vuforiaScope;
     actionid;
     data;
+    modelid;
     modelx;
     modely;
     modelz;
@@ -17,12 +18,13 @@ class Wayfinderpointscoe {
     height;
 
     //scope,scope.incomingdataField , scope.actionidField , scope.modelxField ,scope.modelyField ,scope.modelzField , scope.modelrxField ,scope.modelryField ,scope.modelrzField , scope.modelscaleField , scope.modelboundsField ,   scope.widthField, scope.heightField 
-    constructor(vuforiaScope, data, actionid, modelx, modely, modelz, modelrx, modelry, modelrz, modelscale , modelbounds,   width, height) {
+    constructor(vuforiaScope, data, actionid, modelid,  modelx, modely, modelz, modelrx, modelry, modelrz, modelscale , modelbounds,   width, height) {
 
         // Not using the topoffset, leftoffset yet
         this.vuforiaScope  = vuforiaScope;
         this.data = data;
         this.actionid = actionid;
+        this.modelid = modelid;
         this.modelx = modelx;
         this.modely = modely;
         this.modelz = modelz;
@@ -39,7 +41,14 @@ class Wayfinderpointscoe {
 
     doAction = function () {
          if (this.actionid == 'BoundingBoxWaypoint') {
-            this.boundingBoxWaypoint();
+
+            let waypointData = [];
+            if (Array.isArray(this.data)) {
+                let waypointData = this.data;
+                this.boundingBoxWaypoint(waypointData);
+            } 
+
+            
         }
         
         else {
@@ -69,8 +78,10 @@ class Wayfinderpointscoe {
     
     }
 
-    boundingBoxWaypoint(   ) {
-
+    boundingBoxWaypoint(waypointData   ) {
+    // Assuming incoming data looks like this [{"model":"myModel","path":"/2788/2359/927/53/66/580"}]
+    // or
+    // [{"model":"myModel","path":"/2788/2359/927/53/66/580"} , {"model":"myModel","path":"/2788/2359/927/53/66/580"}]
         
         let modelOffsetx = this.modelx;
         let modelOffsety = this.modely;
@@ -79,47 +90,53 @@ class Wayfinderpointscoe {
         let modelOffsetry = this.modelry;
         let modelOffsetrz = this.modelrz;
         let modelOffsetscale = this.modelscale;
-        let data  = this.data;
+  
 
 
-    //  Assuming incoming data looks like this [{"model":"myModel","path":"/2788/2359/927/53/66/580"}]
-    //  We can get the Model Bounds
+
+
+
+    //  We can get the Model Bounds - will 
         
 
-        let modelName =  data.model;
-        let path = data.path;
-        try {
-        
+        let modelName =  waypointData[0].model;
+        let path = waypointData[0].path;
+
+        console.log("modelName="+modelName+" path=" + path);
           PTC.Metadata.fromId(modelName).then( (metadata) => {
-            var bounds = metadata.get(path).getProp("Model Bounds");
+            try {
+                var bounds = metadata.get(path).getProp("Model Bounds");
+                var displayName = metadata.get(path).getProp("Display Name");
 
-            // Model Bounds "-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"
-    
+                // Model Bounds "-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"
+        
 
-            let waypointLabel = "";
-            let boundsArray = bounds.split(" ");
-        
-            let x = ( Math.abs(boundsArray[0]) + Math.abs(boundsArray[3])) / 2.0;
-            let y = ( Math.abs(boundsArray[1]) + Math.abs(boundsArray[4])) / 2.0;
-            let z = ( Math.abs(boundsArray[2]) + Math.abs(boundsArray[5])) / 2.0;
-        
-            let transFormedxyz = transformLocationCoordinates(x,y,z,modelOffsetx,modelOffsety,modelOffsetz,modelOffsetrx,modelOffsetry,modelOffsetrz,modelOffsetscale);
-        
-            let xloc = transFormedxyz.v[0];
-            let yloc = transFormedxyz.v[1];
-            let zloc = transFormedxyz.v[2];
-        
-            // [{"model":"model-tml","path":"/1/0/0/17","Model Bounds":"-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"}]
-            let position =  [{"position": { "x":  xloc , "y":  yloc, "z": zloc } , "gaze": { "x": 0 , "y": 0, "z":-1},"up":{ "x": 0 , "y": 1, "z":0} , "eventRadius": "0.1", "wayfinderDisplayBoundary": 1.0 , "label":waypointLabel} ];
-            this.vuforiaScope.outgoingdataField = position ; 
-
+                let waypointLabel = displayName;
+                let boundsArray = bounds.split(" ");
+            
+                let x = ( Number(boundsArray[0]) + Number(boundsArray[3])) / 2.0;
+                let y = ( Number(boundsArray[1]) + Number(boundsArray[4])) / 2.0;
+                let z = ( Number(boundsArray[2]) + Number(boundsArray[5])) / 2.0;
+            
+                let transFormedxyz = this.transformLocationCoordinates(x,y,z,modelOffsetx,modelOffsety,modelOffsetz,modelOffsetrx,modelOffsetry,modelOffsetrz,modelOffsetscale);
+            
+                let xloc = transFormedxyz.v[0];
+                let yloc = transFormedxyz.v[1];
+                let zloc = transFormedxyz.v[2];
+            
+                // [{"model":"model-tml","path":"/1/0/0/17","Model Bounds":"-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"}]
+                let position =  [{"position": { "x":  xloc , "y":  yloc, "z": zloc } , "gaze": { "x": 0 , "y": 0, "z":-1},"up":{ "x": 0 , "y": 1, "z":0} , "eventRadius": "0.1", "wayfinderDisplayBoundary": 1.0 , "label":waypointLabel} ];
+                this.vuforiaScope.outgoingdataField = position ; 
+                this.vuforiaScope.$parent.fireEvent('completed');
+                
+            } catch (ex) {
+            console.log("Exception from getBoundingBox " + ex);
+          }
 
 
           }); 
 
-        } catch (ex) {
-          console.log("Exception from getBoundingBox" + ex);
-        }
+
       }
 
 }
