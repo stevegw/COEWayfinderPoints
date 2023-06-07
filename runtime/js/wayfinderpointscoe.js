@@ -72,7 +72,7 @@ class Wayfinderpointscoe {
     
         let mx = new Matrix4();
         //let transMxyz = mx.Scale(scale,scale,scale).Rotate(xaxis, -offsetrx*deg2radFac).Rotate(yaxis, -offsetry*deg2radFac).Rotate(zaxis, -offsetrz*deg2radFac).Translate(offsetx,offsety,offsetz);
-        let transMxyz = mx.Scale(scale,scale,scale).Rotate(xaxis, -offsetrx*deg2radFac).Rotate(yaxis, -offsetry*deg2radFac).Rotate(zaxis, -offsetrz*deg2radFac).Translate(offsetx,offsety,offsetz);
+        let transMxyz = mx.Scale(scale,scale,scale).Rotate(xaxis, offsetrx*deg2radFac).Rotate(yaxis, offsetry*deg2radFac).Rotate(zaxis, offsetrz*deg2radFac).Translate(offsetx,offsety,offsetz);
         
         return origxyz.Transform(transMxyz);
     
@@ -110,8 +110,8 @@ class Wayfinderpointscoe {
 
                 // Model Bounds "-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"
         
-
-                let waypointLabel = displayName;
+                
+                let waypointLabel = displayName;  // split to just get name and the trunction 
                 let boundsArray = bounds.split(" ");
             
                 let x = ( Number(boundsArray[0]) + Number(boundsArray[3])) / 2.0;
