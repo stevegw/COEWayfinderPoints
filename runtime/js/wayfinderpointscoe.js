@@ -130,7 +130,7 @@ class Wayfinderpointscoe {
                 this.vuforiaScope.$parent.fireEvent('completed');
                 
             } catch (ex) {
-            console.log("Exception from getBoundingBox " + ex);
+            console.log("Exception from boundingBoxWaypoint function " + ex);
           }
 
 
