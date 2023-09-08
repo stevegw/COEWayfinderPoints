@@ -82,6 +82,8 @@ class Wayfinderpointscoe {
     // Assuming incoming data looks like this [{"model":"myModel","path":"/2788/2359/927/53/66/580"}]
     // or
     // [{"model":"myModel","path":"/2788/2359/927/53/66/580"} , {"model":"myModel","path":"/2788/2359/927/53/66/580"}]
+
+    
         
         let modelOffsetx = this.modelx;
         let modelOffsety = this.modely;
@@ -110,14 +112,28 @@ class Wayfinderpointscoe {
 
                 // Model Bounds "-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"
         
-                
-                let waypointLabel = displayName;  // split to just get name and the trunction 
+                let waypointLabel;
+                try {
+                    
+                    let waypointLabelArray =  displayName.split(",");
+                    waypointLabelArray = waypointLabelArray[1].split("."); 
+                    waypointLabel = waypointLabelArray[0]; 
+
+                } catch (error) {
+
+                    waypointLabel = displayName;
+                    
+                }
+       
+
+
+
                 let boundsArray = bounds.split(" ");
             
                 let x = ( Number(boundsArray[0]) + Number(boundsArray[3])) / 2.0;
                 let y = ( Number(boundsArray[1]) + Number(boundsArray[4])) / 2.0;
                 let z = ( Number(boundsArray[2]) + Number(boundsArray[5])) / 2.0;
-            
+
                 let transFormedxyz = this.transformLocationCoordinates(x,y,z,modelOffsetx,modelOffsety,modelOffsetz,modelOffsetrx,modelOffsetry,modelOffsetrz,modelOffsetscale);
             
                 let xloc = transFormedxyz.v[0];
