@@ -83,8 +83,7 @@ class Wayfinderpointscoe {
     // or
     // [{"model":"myModel","path":"/2788/2359/927/53/66/580"} , {"model":"myModel","path":"/2788/2359/927/53/66/580"}]
 
-    
-        
+
         let modelOffsetx = this.modelx;
         let modelOffsety = this.modely;
         let modelOffsetz = this.modelz;
@@ -95,62 +94,106 @@ class Wayfinderpointscoe {
   
 
 
-
-
-
-    //  We can get the Model Bounds - will 
-        
-
         let modelName =  waypointData[0].model;
         let path = waypointData[0].path;
-
         console.log("modelName="+modelName+" path=" + path);
-          PTC.Metadata.fromId(modelName).then( (metadata) => {
-            try {
-                var bounds = metadata.get(path).getProp("Model Bounds");
-                var displayName = metadata.get(path).getProp("Display Name");
 
-                // Model Bounds "-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"
-        
-                let waypointLabel;
+
+
+        let waypointLabel;
+        try {
+            let displayName = waypointData[0].categories.__PV_SystemProperties["Display Name"];
+            let waypointLabelArray =  displayName.split(",");
+            waypointLabelArray = waypointLabelArray[1].split("."); 
+            waypointLabel = waypointLabelArray[0]; 
+        } catch (error) {
+            
+        }
+
+        if (this.vuforiaScope.usestructureboundsField === true ) {
+
+            PTC.Structure.fromId(modelName).then( (structure) => {
+
+                let bounds = structure.getBounds(path);
+    
+               //Transform the bounding box to account for the 'model-1' widget's location
+                var xform_bounds = bounds.transform(
+                    [modelOffsetx, modelOffsety, modelOffsetz],
+                    [modelOffsetrx, modelOffsetry, modelOffsetrz],
+                    modelOffsetscale);
+    
+                let x = xform_bounds.center.x;
+                let y = xform_bounds.center.y;
+                let z = xform_bounds.center.z;
+                let position =  [{"position": { "x":  x , "y":  y, "z": z } , "gaze": { "x": 0 , "y": 0, "z":-1},"up":{ "x": 0 , "y": 1, "z":0} , "eventRadius": "0.1", "wayfinderDisplayBoundary": 1.0 , "label":waypointLabel} ];
+              
+                this.vuforiaScope.outgoingdataField = position ; 
+                this.vuforiaScope.$parent.fireEvent('completed');
+    
+    
+    
+            });
+
+
+        } else {
+
+            PTC.Metadata.fromId(modelName).then( (metadata) => {
                 try {
+                    var bounds = metadata.get(path).getProp("Model Bounds");
+                    var displayName = metadata.get(path).getProp("Display Name");
+    
+                    // Model Bounds "-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"
+            
+                    let waypointLabel;
+                    try {
+                        
+                        let waypointLabelArray =  displayName.split(",");
+                        waypointLabelArray = waypointLabelArray[1].split("."); 
+                        waypointLabel = waypointLabelArray[0]; 
+    
+                    } catch (error) {
+    
+                        waypointLabel = displayName;
+                        
+                    }
+           
+    
+    
+    
+                    let boundsArray = bounds.split(" ");
+                
+                    let x = ( Number(boundsArray[0]) + Number(boundsArray[3])) / 2.0;
+                    let y = ( Number(boundsArray[1]) + Number(boundsArray[4])) / 2.0;
+                    let z = ( Number(boundsArray[2]) + Number(boundsArray[5])) / 2.0;
+    
+                    let transFormedxyz = this.transformLocationCoordinates(x,y,z,modelOffsetx,modelOffsety,modelOffsetz,modelOffsetrx,modelOffsetry,modelOffsetrz,modelOffsetscale);
+                
+                    let xloc = transFormedxyz.v[0];
+                    let yloc = transFormedxyz.v[1];
+                    let zloc = transFormedxyz.v[2];
+                
+                    // [{"model":"model-tml","path":"/1/0/0/17","Model Bounds":"-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"}]
+                    let position =  [{"position": { "x":  xloc , "y":  yloc, "z": zloc } , "gaze": { "x": 0 , "y": 0, "z":-1},"up":{ "x": 0 , "y": 1, "z":0} , "eventRadius": "0.1", "wayfinderDisplayBoundary": 1.0 , "label":waypointLabel} ];
                     
-                    let waypointLabelArray =  displayName.split(",");
-                    waypointLabelArray = waypointLabelArray[1].split("."); 
-                    waypointLabel = waypointLabelArray[0]; 
-
-                } catch (error) {
-
-                    waypointLabel = displayName;
+    
                     
-                }
+                    this.vuforiaScope.outgoingdataField = position ; 
+                    this.vuforiaScope.$parent.fireEvent('completed');
+                    
+                } catch (ex) {
+                console.log("Exception from boundingBoxWaypoint function " + ex);
+              }
+    
+    
+              }); 
+    
+
+        }
        
 
 
 
-                let boundsArray = bounds.split(" ");
-            
-                let x = ( Number(boundsArray[0]) + Number(boundsArray[3])) / 2.0;
-                let y = ( Number(boundsArray[1]) + Number(boundsArray[4])) / 2.0;
-                let z = ( Number(boundsArray[2]) + Number(boundsArray[5])) / 2.0;
-
-                let transFormedxyz = this.transformLocationCoordinates(x,y,z,modelOffsetx,modelOffsety,modelOffsetz,modelOffsetrx,modelOffsetry,modelOffsetrz,modelOffsetscale);
-            
-                let xloc = transFormedxyz.v[0];
-                let yloc = transFormedxyz.v[1];
-                let zloc = transFormedxyz.v[2];
-            
-                // [{"model":"model-tml","path":"/1/0/0/17","Model Bounds":"-2.1935341 0.7236265 0.5797631 0.8845805 2.2238839 0.96487"}]
-                let position =  [{"position": { "x":  xloc , "y":  yloc, "z": zloc } , "gaze": { "x": 0 , "y": 0, "z":-1},"up":{ "x": 0 , "y": 1, "z":0} , "eventRadius": "0.1", "wayfinderDisplayBoundary": 1.0 , "label":waypointLabel} ];
-                this.vuforiaScope.outgoingdataField = position ; 
-                this.vuforiaScope.$parent.fireEvent('completed');
-                
-            } catch (ex) {
-            console.log("Exception from boundingBoxWaypoint function " + ex);
-          }
-
-
-          }); 
+        
 
 
       }

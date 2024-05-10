@@ -39,6 +39,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
         modelrzField :  '@', 
         modelscaleField :  '@', 
         modelboundsField :  '=', 
+        usestructureboundsField : '=',
         endpointtextField : '@',
         autolaunchField: '@',
         widthField : '@',

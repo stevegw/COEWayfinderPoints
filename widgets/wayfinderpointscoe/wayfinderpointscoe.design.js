@@ -4,11 +4,11 @@
 
 
 (function() {
-  function twxWayfinderpointscoe() {
+  function wdgwayfinderpointscoe() {
     return {
       // Required, this will be used as the top level tag when it's dropped on the Canvas
       // use a custom prefix to so the name won't collide with other widgets
-      elementTag: 'twx-wayfinderpointscoe',
+      elementTag: 'wdg-wayfinderpointscoe',
 
       // Text displayed for the widget in the Palette
       // This will also be the name of the icon in ide/images directory
@@ -160,6 +160,15 @@
           showInput: true
         },
         {
+          name: 'usestructurebounds',
+          label: 'Use Structure Bounds',
+          datatype: 'boolean',
+          default: "true",
+          isBindingTarget: true,
+          isBindingSource: false,
+          showInput: true
+        },
+        {
           name: 'endpointtext',
           label: 'Endpoint Text',
           datatype: 'string',
@@ -243,7 +252,7 @@
 
       // HTML to render when the widget is dropped on the Canvas
       designTemplate: function () {
-        return '<div class="wayfinderpointscoeWidget"></div>';
+        return '<div class="wayfinderpointscoeWidget" style="display:none"></div>';
       },
 
       //
@@ -254,7 +263,7 @@
       // and always have a delegate-field="delegate" defined
       //
       runtimeTemplate: function (props) {
-        var tmpl = '<div ng-wayfinderpointscoe  incomingdata-field="me.incomingdata" secondincomingdata-field="me.secondincomingdata"  outgoingdata-field="me.outgoingdata" actionid-field={{me.actionid}} autolaunch-field={{me.autolaunch}}  modelid-field={{me.modelid}}  modelx-field={{me.modelx}}  modely-field={{me.modely}} modelz-field={{me.modelz}} modelrx-field={{me.modelrx}} modelry-field={{me.modelry}} modelrz-field={{me.modelrz}} modelscale-field={{me.modelscale}} modelbounds-field="me.modelbounds" endpointtext-field={{me.endpointtext}}    width-field={{me.width}} height-field={{me.height}} topoffset-field={{me.topoffset}} leftoffset-field={{me.leftoffset}}  delegate-field="delegate"></div>' ; 
+        var tmpl = '<div ng-wayfinderpointscoe  incomingdata-field="me.incomingdata" secondincomingdata-field="me.secondincomingdata"  outgoingdata-field="me.outgoingdata" actionid-field={{me.actionid}} autolaunch-field={{me.autolaunch}}  modelid-field={{me.modelid}}  modelx-field={{me.modelx}}  modely-field={{me.modely}} modelz-field={{me.modelz}} modelrx-field={{me.modelrx}} modelry-field={{me.modelry}} modelrz-field={{me.modelrz}} modelscale-field={{me.modelscale}} modelbounds-field="me.modelbounds"  usestructurebounds-field="me.usestructurebounds"  endpointtext-field={{me.endpointtext}}    width-field={{me.width}} height-field={{me.height}} topoffset-field={{me.topoffset}} leftoffset-field={{me.leftoffset}}  delegate-field="delegate"></div>' ; 
         return tmpl;
       }
     };
@@ -262,6 +271,6 @@
 
   // registers the widget in Studio so that it gets displayed in the Widget Palette, it will only show up in the
   // Widget Palette for views that this widget is registered for (as determined by category property)
-  twxAppBuilder.widget('twxWayfinderpointscoe', twxWayfinderpointscoe);
+  twxAppBuilder.widget('wdg-wayfinderpointscoe', wdgwayfinderpointscoe);
 
 }());
